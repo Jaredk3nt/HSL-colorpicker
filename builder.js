@@ -1,5 +1,7 @@
 var app = {};
 app.hueValue = 150;
+app.satValue = .5;
+app.lumValue = .5;
 
 $(function() {
 	app.$colorPicker = $('#color-picker');
@@ -38,10 +40,37 @@ $(function() {
 
 	}
 
+	var canvasOffset = app.$huePicker.offset();
+	var offsetX = canvasOffset.left;
+	var offsetY = canvasOffset.top;
+
 	//select the hue from the hueSelector
 	app.$huePicker.mousedown( function(e) {
+		mouseX = parseInt(e.clientX - offsetX);
+        mouseY = parseInt(e.clientY - offsetY);
+		//console.log("Down: "+ mouseX + " / " + mouseY);
 
+		$(document).mousemove(function(e) {
+			mouseX = parseInt(e.clientX - offsetX);
+ 	        mouseY = parseInt(e.clientY - offsetY);
+		})
+
+		app.colorTimer = setInterval(app.getHue(e), 50);
 	})
+
+	.mouseup(function(e) {
+    	//clearInterval(ms.colorTimer);
+    	$(document).unbind('mousemove');
+  	});
+
+	app.getHue = function(e) {
+		//mouseX = parseInt(e.clientX-offsetX);
+        mouseY = parseInt(e.clientY - offsetY);
+
+		app.hueValue = mouseY * (360/app.$huePicker.height());
+		console.log(app.$huePicker.height());
+		app.buildColorPalette();
+	}
 
 	// build the initial states
 	app.buildColorPalette();
