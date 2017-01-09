@@ -1,7 +1,7 @@
 var app = {};
 app.hueValue = 150;
-app.satValue = 1;
-app.lumValue = .5;
+app.satValue = 100;
+app.lumValue = 50;
 
 $(function() {
 	app.$colorPicker = $('#color-picker');
@@ -43,12 +43,14 @@ $(function() {
 	}
 
 	app.buildColorDisplay = function() {
-		var color = "hsl(" + app.hueValue + "," + (app.satValue * 100)+ "%," + (app.lumValue * 100) + "%)";
+		var color = "hsl(" + app.hueValue + "," + (app.satValue)+ "%," + (app.lumValue) + "%)";
 		console.log(color);
 		app.$colorDisplay[0].style.backgroundColor = color;
 		//app.$colorDisplay.attr("background", color);
 		//app.displayctx.fillRect(0, 0, app.displayctx.canvas.witdth, app.displayctx.canvas.height);
-
+		$('#hue').text('H: ' + app.hueValue);
+		$('#saturation').text('S: ' + app.satValue);
+		$('#luminosity').text('L: ' + app.lumValue);
 	}
 
 	// HUE PICKER INTERACTIONS
@@ -81,8 +83,7 @@ $(function() {
 
 		app.hueValue = mouseY * (360/app.$huePicker.height());
 		console.log(app.$huePicker.height());
-		app.buildColorPalette();
-		app.buildColorDisplay();
+		app.update();
 	}
 
 	//COLOR PICKER INTERACTIONS
@@ -113,13 +114,17 @@ $(function() {
 		mouseX = parseInt(e.clientX - colorOffsetX);
         mouseY = parseInt(e.clientY - colorOffsetY);
 
-		app.hueValue = mouseY * (360/app.$colorPicker.height());
-		console.log(app.$colorPicker.height());
+		app.satValue = (mouseX * (100/app.$colorPicker.width())).toFixed(2);
+		app.lumValue = ((app.$colorPicker.height() - mouseY) * (100/app.$colorPicker.height())).toFixed(2);
+		app.update();
+	}
+
+	app.update = function() {
 		app.buildColorPalette();
+		app.buildHueSelector();
+		app.buildColorDisplay();
 	}
 
 	// build the initial states
-	app.buildColorPalette();
-	app.buildHueSelector();
-	app.buildColorDisplay();
+	app.update();
 });
