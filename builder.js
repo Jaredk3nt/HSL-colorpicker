@@ -117,8 +117,15 @@ $(function() {
 		mouseX = parseInt(e.clientX - colorOffsetX);
 		mouseY = parseInt(e.clientY - colorOffsetY);
 
+		//create scalar to modify values over the x axis
+		var lumScalar = (app.$colorPicker.width() - (app.$colorPicker.width() - mouseX)) / app.$colorPicker.width() + 1;
+
+		console.log(lumScalar);
+		//saturation
 		app.satValue = (mouseX * (100/app.$colorPicker.width())).toFixed(0);
-		app.lumValue = ((app.$colorPicker.height() - mouseY) * (100/app.$colorPicker.height())).toFixed(0);
+
+		//lightness
+		app.lumValue = (((app.$colorPicker.height() - mouseY) * (100/app.$colorPicker.height())).toFixed(0))/lumScalar;
 		app.update();
 	}
 
