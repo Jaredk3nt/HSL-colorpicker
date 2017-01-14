@@ -1,7 +1,7 @@
 var app = {};
-app.hueValue = 150;
-app.satValue = 100;
-app.lumValue = 50;
+app.hueValue = 0;
+app.satValue = 0;
+app.lumValue = 0;
 
 $(function() {
 	app.$colorPicker = $('#color-picker');
@@ -16,10 +16,23 @@ $(function() {
 	var hueOffsetX = hueCanvasOffset.left;
 	var hueOffsetY = hueCanvasOffset.top;
 
+	app.updateHueOffset = function() {
+		hueCanvasOffset = app.$huePicker.offset();
+		hueOffsetX = hueCanvasOffset.left;
+		hueOffsetY = hueCanvasOffset.top;
+	}
+
 	//COLOR PICKER INTERACTIONS
 	var colorCanvasOffset = app.$colorPicker.offset();
 	var colorOffsetX = colorCanvasOffset.left;
 	var colorOffsetY = colorCanvasOffset.top;
+
+	app.updateColorOffset = function() {
+		colorCanvasOffset = app.$colorPicker.offset();
+		colorOffsetX = colorCanvasOffset.left;
+		colorOffsetY = colorCanvasOffset.top;
+	}
+
 
 	app.buildColorPalette = function() {
 		var gradient = app.colorctx.createLinearGradient(0, 0, app.$colorPicker.width(), 0);
@@ -56,7 +69,7 @@ $(function() {
 		var color = "hsl(" + app.hueValue + "," + (app.satValue)+ "%," + (app.lumValue) + "%)";
 		console.log(color);
 		app.$colorDisplay[0].style.backgroundColor = color;
-		$('#hsl').text('hsl( ' + app.hueValue + ', ' + app.satValue + ', ' + app.lumValue + ')');
+		$('#hsl').text('hsl( ' + app.hueValue + ', ' + app.satValue + '%, ' + app.lumValue + '%)');
 	}
 
 	app.update = function() {
@@ -69,6 +82,8 @@ $(function() {
 
 	//select the hue from the hueSelector
 	app.$huePicker.mousedown( function(e) {
+		app.updateHueOffset();
+
 		mouseX = parseInt(e.clientX - hueOffsetX);
 		mouseY = parseInt(e.clientY - hueOffsetY);
 		//console.log("Down: "+ mouseX + " / " + mouseY);
@@ -96,6 +111,8 @@ $(function() {
 
 	//select the hue from the hueSelector
 	app.$colorPicker.mousedown( function(e) {
+		app.updateColorOffset();
+
 		mouseX = parseInt(e.clientX - colorOffsetX);
 		mouseY = parseInt(e.clientY - colorOffsetY);
 		//console.log("Down: "+ mouseX + " / " + mouseY);
@@ -125,7 +142,7 @@ $(function() {
 		app.satValue = (mouseX * (100/app.$colorPicker.width())).toFixed(0);
 
 		//lightness
-		app.lumValue = (((app.$colorPicker.height() - mouseY) * (100/app.$colorPicker.height())).toFixed(0))/lumScalar;
+		app.lumValue = ((((app.$colorPicker.height() - mouseY) * (100/app.$colorPicker.height())))/lumScalar).toFixed(0);
 		app.update();
 	}
 
