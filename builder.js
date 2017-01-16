@@ -1,7 +1,7 @@
 var app = {};
-app.hueValue = 0;
-app.satValue = 0;
-app.lumValue = 0;
+app.hueValue = 193;
+app.satValue = 90;
+app.lumValue = 43;
 
 $(function() {
 	app.$colorPicker = $('#color-picker');
@@ -10,6 +10,7 @@ $(function() {
 	app.colorctx = app.$colorPicker[0].getContext('2d');
 	app.huectx = app.$huePicker[0].getContext('2d');
 	app.displayctx = app.$colorDisplay[0].getContext('2d');
+	app.colorDisplayText = $('#hsl');
 
 	// HUE PICKER INTERACTIONS
 	var hueCanvasOffset = app.$huePicker.offset();
@@ -67,15 +68,19 @@ $(function() {
 
 	app.buildColorDisplay = function() {
 		var color = "hsl(" + app.hueValue + "," + (app.satValue)+ "%," + (app.lumValue) + "%)";
-		console.log(color);
 		app.$colorDisplay[0].style.backgroundColor = color;
-		$('#hsl').text('hsl( ' + app.hueValue + ', ' + app.satValue + '%, ' + app.lumValue + '%)');
+		$('#hsl').text('hsl(' + app.hueValue + ', ' + app.satValue + '%, ' + app.lumValue + '%)');
 	}
 
 	app.update = function() {
 		app.buildColorPalette();
 		app.buildHueSelector();
 		app.buildColorDisplay();
+		if (app.lumValue >= 70) {
+			app.colorDisplayText[0].style.color = 'black';
+		}else {
+			app.colorDisplayText[0].style.color = 'white';
+		}
 	}
 
 	// INTERACTIONS //
@@ -86,7 +91,6 @@ $(function() {
 
 		mouseX = parseInt(e.clientX - hueOffsetX);
 		mouseY = parseInt(e.clientY - hueOffsetY);
-		//console.log("Down: "+ mouseX + " / " + mouseY);
 
 		$(document).mousemove(function(e) {
 			mouseX = parseInt(e.clientX - hueOffsetX);
@@ -115,7 +119,6 @@ $(function() {
 
 		mouseX = parseInt(e.clientX - colorOffsetX);
 		mouseY = parseInt(e.clientY - colorOffsetY);
-		//console.log("Down: "+ mouseX + " / " + mouseY);
 
 		$(document).mousemove(function(e) {
 			mouseX = parseInt(e.clientX - colorOffsetX);
@@ -137,7 +140,6 @@ $(function() {
 		//create scalar to modify values over the x axis
 		var lumScalar = (app.$colorPicker.width() - (app.$colorPicker.width() - mouseX)) / app.$colorPicker.width() + 1;
 
-		console.log(lumScalar);
 		//saturation
 		app.satValue = (mouseX * (100/app.$colorPicker.width())).toFixed(0);
 
